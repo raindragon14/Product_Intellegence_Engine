@@ -34,19 +34,20 @@ Tim produk sering menghadapi tantangan dalam mengidentifikasi inti dari keluhan 
 ## 📊 Diagram Alur Sistem
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#4CAF50','primaryTextColor':'#fff','primaryBorderColor':'#2E7D32','lineColor':'#1976D2','secondaryColor':'#2196F3','tertiaryColor':'#FF9800','background':'#ffffff','mainBkg':'#4CAF50','secondBkg':'#2196F3','tertiaryBkg':'#FF9800','textColor':'#333333','fontSize':'16px'}}}%%
 graph TD
-    A[📱 Data Mentah Ulasan<br/>Google Play Store] --> B[🔧 Script Pengumpulan Data<br/>Requests/Scrapy]
-    B --> C[📄 File CSV Mentah<br/>Raw Reviews]
-    C --> D[🤖 Script Pemrosesan LLM<br/>Gemini API + Pandas]
-    D --> E[📊 File CSV Terstruktur<br/>Classified Feedback]
-    E --> F[📈 Dasbor Looker Studio<br/>Visualisasi & Insight]
+    A["📱 Data Mentah Ulasan<br/>Google Play Store"] --> B["🔧 Script Pengumpulan Data<br/>Requests/Scrapy"]
+    B --> C["📄 File CSV Mentah<br/>Raw Reviews"]
+    C --> D["🤖 Script Pemrosesan LLM<br/>Gemini API + Pandas"]
+    D --> E["📊 File CSV Terstruktur<br/>Classified Feedback"]
+    E --> F["📈 Dasbor Looker Studio<br/>Visualisasi & Insight"]
     
-    style A fill:#e1f5ff
-    style B fill:#fff3e0
-    style C fill:#f3e5f5
-    style D fill:#e8f5e9
-    style E fill:#fce4ec
-    style F fill:#fff9c4
+    style A fill:#1976D2,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style B fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:#fff
+    style C fill:#7B1FA2,stroke:#4A148C,stroke-width:2px,color:#fff
+    style D fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#fff
+    style E fill:#C2185B,stroke:#880E4F,stroke-width:2px,color:#fff
+    style F fill:#F57C00,stroke:#E65100,stroke-width:2px,color:#fff
 ```
 
 ### 🔄 Alur Kerja Pipeline

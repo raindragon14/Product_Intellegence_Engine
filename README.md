@@ -36,7 +36,7 @@ Tim produk sering menghadapi tantangan dalam mengidentifikasi inti dari keluhan 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#4CAF50','primaryTextColor':'#fff','primaryBorderColor':'#2E7D32','lineColor':'#1976D2','secondaryColor':'#2196F3','tertiaryColor':'#FF9800','background':'#ffffff','mainBkg':'#4CAF50','secondBkg':'#2196F3','tertiaryBkg':'#FF9800','textColor':'#333333','fontSize':'16px'}}}%%
 graph TD
-    A["📱 Data Mentah Ulasan<br/>Google Play Store"] --> B["🔧 Script Pengumpulan Data<br/>Requests/Scrapy"]
+    A["📱 Data Mentah Ulasan<br/>Google Play Store"] --> B["🔧 Script Pengumpulan Data<br/>google-play-scraper"]
     B --> C["📄 File CSV Mentah<br/>Raw Reviews"]
     C --> D["🤖 Script Pemrosesan LLM<br/>Gemini API + Pandas"]
     D --> E["📊 File CSV Terstruktur<br/>Classified Feedback"]
@@ -54,11 +54,11 @@ graph TD
 
 | Tahap | Deskripsi | Tools |
 |-------|-----------|-------|
-| **1. Data Collection** | Scraping ulasan dari Google Play Store | Requests/Scrapy |
+| **1. Data Collection** | Scraping ulasan dari Google Play Store | google-play-scraper |
 | **2. Data Storage** | Menyimpan data mentah dalam format CSV | Pandas |
-| **3. LLM Processing** | Klasifikasi dan analisis menggunakan AI | Gemini API |
+| **3. LLM Processing** | Klasifikasi dan analisis menggunakan AI | Google Gemini API |
 | **4. Structured Output** | Data terstruktur dengan kategori keluhan | Pandas |
-| **5. Visualization** | Dashboard interaktif untuk product insights | Looker Studio |
+| **5. Visualization** | Dashboard interaktif untuk product insights | Matplotlib, Looker Studio |
 
 ---
 
@@ -70,18 +70,20 @@ graph TD
 
 **Backend & Processing**
 - 🐍 Python 3.8+
-- 🐼 Pandas
-- 🌐 Requests/Scrapy
-- 📊 Matplotlib/Seaborn
+- 🐼 Pandas (Data manipulation)
+- 🌐 google-play-scraper (Scraping)
+- 📊 Matplotlib/Seaborn (Visualization)
+- 📓 Jupyter Notebook (Analysis)
 
 </td>
 <td>
 
-**AI & Visualization**
-- 🤖 Google Gemini API
-- 📈 Looker Studio
+**AI & Cloud**
+- 🤖 Google Gemini API (LLM)
+- 📈 Looker Studio (Dashboard)
 - 💾 CSV/JSON Storage
-- 🔄 Automated ETL
+- 🔄 Automated ETL Pipeline
+- 🔐 dotenv (Environment config)
 
 </td>
 </tr>
@@ -113,22 +115,50 @@ cd Product_Intellegence_Engine
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Setup API Key
+### 3️⃣ Setup Environment
 ```bash
-# Tambahkan Gemini API key ke environment variable
-export GEMINI_API_KEY="your-api-key-here"
+# Salin file environment template
+cp .env.example .env
+
+# Edit file .env dan tambahkan API key Anda
+# GEMINI_API_KEY=your-api-key-here
 ```
 
+> 🔑 **Dapatkan API Key**: [Google AI Studio](https://ai.google.dev/)
+
 ### 4️⃣ Jalankan Pipeline
+
+**Opsi 1: Jalankan Full Pipeline (Recommended)**
 ```bash
-# Scraping data
-python scraper.py
+# Menjalankan seluruh pipeline secara otomatis
+python main.py
+```
 
-# Proses dengan LLM
-python process_llm.py
+**Opsi 2: Jalankan Per Tahap**
+```bash
+# 1. Scraping data
+python scripts/scraper.py
 
-# Generate visualisasi
-python visualize.py
+# 2. Proses dengan LLM
+python scripts/process_llm.py
+
+# 3. Generate visualisasi
+python scripts/visualize.py
+```
+
+**Opsi 3: Dengan CLI Arguments**
+```bash
+# Batasi jumlah review
+python main.py --max-reviews 500
+
+# Gunakan app ID berbeda
+python main.py --app-id com.your.app
+
+# Jalankan hanya scraping
+python main.py --scrape-only
+
+# Jalankan hanya visualisasi (memerlukan data processed)
+python main.py --visualize-only
 ```
 
 ---
@@ -137,17 +167,40 @@ python visualize.py
 
 ```
 Product_Intellegence_Engine/
-├── data/
-│   ├── raw/              # Data mentah dari scraping
-│   └── processed/        # Data hasil pemrosesan LLM
-├── scripts/
-│   ├── scraper.py        # Script pengumpulan data
-│   ├── process_llm.py    # Script pemrosesan LLM
-│   └── visualize.py      # Script visualisasi
-├── notebooks/            # Jupyter notebooks untuk eksplorasi
-├── dashboard/            # File konfigurasi dashboard
-├── requirements.txt      # Dependencies
-└── README.md
+├── 📂 config/                  # Konfigurasi aplikasi
+│   ├── config.py              # File konfigurasi utama
+│   └── README.md              # Dokumentasi konfigurasi
+│
+├── 📂 data/                    # Data storage
+│   ├── raw/                   # Data mentah dari scraping
+│   ├── processed/             # Data hasil pemrosesan LLM
+│   └── samples/               # Contoh data untuk testing
+│
+├── 📂 scripts/                 # Core modules
+│   ├── scraper.py             # Script pengumpulan data (Google Play Store)
+│   ├── process_llm.py         # Script klasifikasi dengan LLM
+│   └── visualize.py           # Script generasi visualisasi
+│
+├── 📂 utils/                   # Helper utilities
+│   ├── data_handler.py        # Operasi data CSV
+│   └── logger.py              # Logging utilities
+│
+├── 📂 notebooks/               # Jupyter notebooks
+│   └── data_exploration.ipynb # Eksplorasi & analisis data
+│
+├── 📂 dashboard/               # Dashboard & visualisasi
+│   ├── exports/               # Chart & data export (auto-generated)
+│   ├── README.md              # Panduan dashboard
+│   ├── looker_studio_guide.md # Tutorial Looker Studio
+│   └── sample_dashboard_config.json
+│
+├── 📄 main.py                  # Pipeline orchestrator utama
+├── 📄 requirements.txt         # Dependencies Python
+├── 📄 .env.example             # Template environment variables
+├── 📄 README.md                # Dokumentasi utama (file ini)
+├── 📄 QUICKSTART.md            # Panduan cepat memulai
+├── 📄 TESTING.md               # Panduan testing
+└── 📄 PROJECT_STRUCTURE.md     # Overview struktur lengkap
 ```
 
 ---
@@ -159,6 +212,38 @@ Product_Intellegence_Engine/
 - 📈 **Trend Analysis** - Perubahan sentimen dari waktu ke waktu
 - 🎯 **Feature Comparison** - Benchmarking dengan kompetitor
 - 🔍 **Root Cause Analysis** - Kategori masalah utama
+
+### File yang Dihasilkan
+```
+dashboard/exports/
+├── looker_studio_data.csv      # Data siap import ke Looker Studio
+├── dashboard_summary.json      # Ringkasan statistik
+├── category_distribution.png   # Chart distribusi kategori
+├── sentiment_analysis.png      # Chart analisis sentimen
+├── trend_analysis.png          # Chart trend waktu
+└── priority_distribution.png   # Chart distribusi prioritas
+```
+
+### Console Output
+Setelah menjalankan pipeline, Anda akan melihat:
+- ✅ Statistik pengumpulan data
+- 📊 Distribusi kategori & sentimen
+- ⚠️ Issues dengan prioritas tinggi
+- ⭐ Distribusi rating
+- 🎨 Lokasi file visualisasi
+
+---
+
+## 📚 Dokumentasi Lengkap
+
+| Dokumen | Deskripsi |
+|---------|-----------|
+| [QUICKSTART.md](QUICKSTART.md) | Panduan cepat memulai |
+| [TESTING.md](TESTING.md) | Panduan testing & troubleshooting |
+| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Overview lengkap struktur project |
+| [config/README.md](config/README.md) | Dokumentasi konfigurasi |
+| [dashboard/README.md](dashboard/README.md) | Setup dashboard & visualisasi |
+| [dashboard/looker_studio_guide.md](dashboard/looker_studio_guide.md) | Tutorial Looker Studio detail |
 
 ---
 

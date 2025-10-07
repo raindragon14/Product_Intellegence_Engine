@@ -12,6 +12,7 @@ from config.config import RAW_DATA_DIR, PROCESSED_DATA_DIR
 from utils import setup_logging, get_logger, DataHandler
 from scripts.scraper import PlayStoreScraper
 from scripts.process_llm import FeedbackProcessor
+from scripts.visualize import DashboardGenerator
 
 logger = get_logger(__name__)
 
@@ -31,6 +32,7 @@ class PIEnginePipeline:
         self.max_reviews = max_reviews
         self.scraper = None
         self.processor = None
+        self.visualizer = None
         
     def run_scraping(self) -> Path:
         """
@@ -127,6 +129,27 @@ class PIEnginePipeline:
             logger.error(f"❌ Analysis phase failed: {e}")
             raise
     
+    def run_visualization(self, processed_file: Path):
+        """
+        Run visualization and dashboard export phase.
+        
+        Args:
+            processed_file: Path to processed data file
+        """
+        logger.info("\n" + "=" * 60)
+        logger.info("🎨 PHASE 4: VISUALIZATION & DASHBOARD")
+        logger.info("=" * 60)
+        
+        try:
+            self.visualizer = DashboardGenerator()
+            self.visualizer.run(processed_file.name)
+            
+            logger.info("✅ Phase 4 completed: Visualizations generated")
+            
+        except Exception as e:
+            logger.error(f"❌ Visualization phase failed: {e}")
+            raise
+    
     def _generate_insights(self, df):
         """Generate and display key insights from processed data."""
         
@@ -205,6 +228,9 @@ class PIEnginePipeline:
             # Phase 3: Analysis
             self.run_analysis(processed_file)
             
+            # Phase 4: Visualization
+            self.run_visualization(processed_file)
+            
             # Final summary
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()
@@ -215,12 +241,14 @@ class PIEnginePipeline:
             logger.info(f"⏱️  Duration: {duration:.1f} seconds")
             logger.info(f"📁 Raw Data: {raw_file}")
             logger.info(f"📁 Processed Data: {processed_file}")
+            logger.info(f"📊 Dashboard Exports: dashboard/exports/")
             logger.info("=" * 70)
             
             print("\n✨ Next steps:")
-            print("   1. Open the processed CSV file in Excel/Google Sheets")
-            print("   2. Import to Looker Studio for visualization")
-            print("   3. Share insights with your product team!")
+            print("   1. Check dashboard/exports/ for generated charts")
+            print("   2. Import looker_studio_data.csv to Looker Studio")
+            print("   3. Follow dashboard/looker_studio_guide.md for setup")
+            print("   4. Share insights with your product team!")
             
         except Exception as e:
             logger.error(f"\n❌ Pipeline failed: {e}")
@@ -257,6 +285,12 @@ def main():
         help='Only run the processing phase (requires existing raw data)'
     )
     
+    parser.add_argument(
+        '--visualize-only',
+        action='store_true',
+        help='Only run the visualization phase (requires existing processed data)'
+    )
+    
     args = parser.parse_args()
     
     # Setup logging
@@ -281,6 +315,13 @@ def main():
         processed_files = list(PROCESSED_DATA_DIR.glob("*.csv"))
         latest_processed = max(processed_files, key=lambda x: x.stat().st_ctime)
         pipeline.run_analysis(latest_processed)
+    elif args.visualize_only:
+        processed_files = list(PROCESSED_DATA_DIR.glob("*.csv"))
+        if not processed_files:
+            logger.error("❌ No processed data files found. Run pipeline first.")
+            sys.exit(1)
+        latest_file = max(processed_files, key=lambda x: x.stat().st_ctime)
+        pipeline.run_visualization(latest_file)
     else:
         # Run full pipeline
         pipeline.run_full_pipeline()

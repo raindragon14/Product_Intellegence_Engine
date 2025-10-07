@@ -47,6 +47,11 @@ python main.py --scrape-only
 python main.py --process-only
 ```
 
+**Step 3: Generate Visualizations**
+```bash
+python main.py --visualize-only
+```
+
 ### Option 4: Individual Scripts
 
 **Scraping only:**
@@ -57,6 +62,11 @@ python scripts/scraper.py
 **Processing only:**
 ```bash
 python scripts/process_llm.py
+```
+
+**Visualization only:**
+```bash
+python scripts/visualize.py
 ```
 
 ## 📊 Using Jupyter Notebook
@@ -70,13 +80,19 @@ jupyter notebook notebooks/data_exploration.ipynb
 
 - **Raw Data**: `data/raw/reviews_*.csv`
 - **Processed Data**: `data/processed/processed_reviews_*.csv`
+- **Dashboard Exports**: `dashboard/exports/`
+  - `looker_studio_data.csv` - Main file for Looker Studio
+  - `*.png` - Generated charts
+  - `dashboard_summary.json` - Summary statistics
 - **Logs**: `pipeline.log`
 
 ## 🎯 Next Steps
 
-1. **Import to Looker Studio**: Upload processed CSV to create dashboards
-2. **Analyze Trends**: Use the Jupyter notebook for deeper insights
-3. **Share with Team**: Export insights and visualizations
+1. **Check Generated Charts**: Open `dashboard/exports/` to see visualizations
+2. **Import to Looker Studio**: Upload `looker_studio_data.csv` to create interactive dashboards
+3. **Follow Dashboard Guide**: Read `dashboard/looker_studio_guide.md` for detailed setup
+4. **Analyze Trends**: Use the Jupyter notebook for deeper insights
+5. **Share with Team**: Export insights and visualizations
 
 ## ⚙️ Configuration Options
 
@@ -115,16 +131,28 @@ LLM_CONFIG = {
 ```
 Product_Intellegence_Engine/
 ├── config/              # Configuration files
+│   └── config.py       # Central configuration
 ├── data/
 │   ├── raw/            # Scraped reviews
 │   └── processed/      # Classified reviews
 ├── scripts/            # Core modules
 │   ├── scraper.py      # Web scraper
-│   └── process_llm.py  # LLM processor
+│   ├── process_llm.py  # LLM processor
+│   └── visualize.py    # Chart generator
 ├── utils/              # Helper functions
+│   ├── data_handler.py # Data operations
+│   └── logger.py       # Logging utilities
 ├── notebooks/          # Jupyter notebooks
+│   └── data_exploration.ipynb
+├── dashboard/          # Dashboard files
+│   ├── exports/        # Generated charts & data
+│   ├── README.md       # Dashboard guide
+│   ├── looker_studio_guide.md
+│   └── sample_dashboard_config.json
 ├── main.py             # Main pipeline
-└── requirements.txt    # Dependencies
+├── requirements.txt    # Dependencies
+├── .env.example        # Environment template
+└── QUICKSTART.md       # This file
 ```
 
 ## 🤝 Contributing

@@ -33,6 +33,7 @@ wheels/
 # Data files
 data/raw/*.csv
 data/processed/*.csv
+!data/samples/*.csv
 *.xlsx
 *.json
 
@@ -52,5 +53,7 @@ logs/
 Thumbs.db
 
 # Project specific
-dashboard/
+dashboard/exports/
 temp/
+*.png
+!dashboard/*.png

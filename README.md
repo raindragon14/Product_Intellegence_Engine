@@ -172,8 +172,8 @@ Product_Intellegence_Engine/
 │   └── README.md              # Dokumentasi konfigurasi
 │
 ├── 📂 data/                    # Data storage
-│   ├── raw/                   # Data mentah dari scraping
-│   ├── processed/             # Data hasil pemrosesan LLM
+│   ├── raw/                   # Data mentah dari scraping (auto-created)
+│   ├── processed/             # Data hasil pemrosesan LLM (auto-created)
 │   └── samples/               # Contoh data untuk testing
 │
 ├── 📂 scripts/                 # Core modules
@@ -191,8 +191,7 @@ Product_Intellegence_Engine/
 ├── 📂 dashboard/               # Dashboard & visualisasi
 │   ├── exports/               # Chart & data export (auto-generated)
 │   ├── README.md              # Panduan dashboard
-│   ├── looker_studio_guide.md # Tutorial Looker Studio
-│   └── sample_dashboard_config.json
+│   └── looker_studio_guide.md # Tutorial Looker Studio
 │
 ├── 📄 main.py                  # Pipeline orchestrator utama
 ├── 📄 requirements.txt         # Dependencies Python

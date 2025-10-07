@@ -42,7 +42,7 @@ class PIEnginePipeline:
             Path to the scraped data file
         """
         logger.info("=" * 60)
-        logger.info("📥 PHASE 1: DATA COLLECTION")
+        logger.info(" PHASE 1: DATA COLLECTION")
         logger.info("=" * 60)
         
         try:
@@ -60,11 +60,11 @@ class PIEnginePipeline:
             raw_files = list(RAW_DATA_DIR.glob("*.csv"))
             latest_file = max(raw_files, key=lambda x: x.stat().st_ctime)
             
-            logger.info(f"✅ Phase 1 completed: {len(reviews_data)} reviews collected")
+            logger.info(f" Phase 1 completed: {len(reviews_data)} reviews collected")
             return latest_file
             
         except Exception as e:
-            logger.error(f"❌ Scraping phase failed: {e}")
+            logger.error(f" Scraping phase failed: {e}")
             raise
     
     def run_processing(self, input_file: Path) -> Path:
@@ -96,11 +96,11 @@ class PIEnginePipeline:
             processed_files = list(PROCESSED_DATA_DIR.glob("*.csv"))
             latest_file = max(processed_files, key=lambda x: x.stat().st_ctime)
             
-            logger.info(f"✅ Phase 2 completed: {len(df_processed)} reviews processed")
+            logger.info(f" Phase 2 completed: {len(df_processed)} reviews processed")
             return latest_file
             
         except Exception as e:
-            logger.error(f"❌ Processing phase failed: {e}")
+            logger.error(f" Processing phase failed: {e}")
             raise
     
     def run_analysis(self, processed_file: Path):
@@ -111,7 +111,7 @@ class PIEnginePipeline:
             processed_file: Path to processed data file
         """
         logger.info("\n" + "=" * 60)
-        logger.info("📊 PHASE 3: ANALYSIS & INSIGHTS")
+        logger.info(" PHASE 3: ANALYSIS & INSIGHTS")
         logger.info("=" * 60)
         
         try:
@@ -123,10 +123,10 @@ class PIEnginePipeline:
             # Generate insights
             self._generate_insights(df)
             
-            logger.info("✅ Phase 3 completed: Analysis generated")
+            logger.info(" Phase 3 completed: Analysis generated")
             
         except Exception as e:
-            logger.error(f"❌ Analysis phase failed: {e}")
+            logger.error(f" Analysis phase failed: {e}")
             raise
     
     def run_visualization(self, processed_file: Path):
@@ -137,34 +137,34 @@ class PIEnginePipeline:
             processed_file: Path to processed data file
         """
         logger.info("\n" + "=" * 60)
-        logger.info("🎨 PHASE 4: VISUALIZATION & DASHBOARD")
+        logger.info(" PHASE 4: VISUALIZATION & DASHBOARD")
         logger.info("=" * 60)
         
         try:
             self.visualizer = DashboardGenerator()
             self.visualizer.run(processed_file.name)
             
-            logger.info("✅ Phase 4 completed: Visualizations generated")
+            logger.info(" Phase 4 completed: Visualizations generated")
             
         except Exception as e:
-            logger.error(f"❌ Visualization phase failed: {e}")
+            logger.error(f" Visualization phase failed: {e}")
             raise
     
     def _generate_insights(self, df):
         """Generate and display key insights from processed data."""
         
         print("\n" + "=" * 60)
-        print("📈 KEY INSIGHTS")
+        print(" KEY INSIGHTS")
         print("=" * 60)
         
         # Overall stats
-        print(f"\n📊 Overall Statistics:")
+        print(f"\n Overall Statistics:")
         print(f"   Total Reviews: {len(df)}")
         print(f"   Average Rating: {df['rating'].mean():.2f}/5.0")
         
         # Category breakdown
         if 'category' in df.columns:
-            print(f"\n🗂️  Top Categories:")
+            print(f"\n  Top Categories:")
             category_counts = df['category'].value_counts()
             for i, (cat, count) in enumerate(category_counts.head(5).items(), 1):
                 pct = (count / len(df)) * 100
@@ -172,39 +172,39 @@ class PIEnginePipeline:
         
         # Sentiment analysis
         if 'sentiment' in df.columns:
-            print(f"\n😊 Sentiment Distribution:")
+            print(f"\n Sentiment Distribution:")
             sentiment_counts = df['sentiment'].value_counts()
             for sent in ['positive', 'neutral', 'negative']:
                 count = sentiment_counts.get(sent, 0)
                 pct = (count / len(df)) * 100 if len(df) > 0 else 0
-                emoji = "😊" if sent == "positive" else ("😐" if sent == "neutral" else "😞")
+                emoji = "" if sent == "positive" else ("" if sent == "neutral" else "")
                 print(f"   {emoji} {sent.title()}: {count} ({pct:.1f}%)")
         
         # Priority issues
         if 'priority' in df.columns:
-            print(f"\n⚠️  Priority Distribution:")
+            print(f"\n  Priority Distribution:")
             priority_counts = df['priority'].value_counts()
             for pri in ['high', 'medium', 'low']:
                 count = priority_counts.get(pri, 0)
                 pct = (count / len(df)) * 100 if len(df) > 0 else 0
-                emoji = "🔴" if pri == "high" else ("🟡" if pri == "medium" else "🟢")
+                emoji = "" if pri == "high" else ("🟡" if pri == "medium" else "🟢")
                 print(f"   {emoji} {pri.title()}: {count} ({pct:.1f}%)")
         
         # Top issues (high priority)
         if 'priority' in df.columns and 'summary' in df.columns:
             high_priority = df[df['priority'] == 'high']
             if not high_priority.empty:
-                print(f"\n🔴 Top High-Priority Issues:")
+                print(f"\n Top High-Priority Issues:")
                 for i, row in enumerate(high_priority.head(5).itertuples(), 1):
                     print(f"   {i}. [{row.category}] {row.summary[:70]}...")
         
         # Rating distribution
-        print(f"\n⭐ Rating Distribution:")
+        print(f"\n Rating Distribution:")
         rating_counts = df['rating'].value_counts().sort_index(ascending=False)
         for rating, count in rating_counts.items():
             pct = (count / len(df)) * 100
-            stars = "⭐" * int(rating)
-            bar = "█" * int(pct / 2)
+            stars = "" * int(rating)
+            bar = "" * int(pct / 2)
             print(f"   {stars} ({rating}): {bar} {count} ({pct:.1f}%)")
         
         print("\n" + "=" * 60)
@@ -214,9 +214,9 @@ class PIEnginePipeline:
         start_time = datetime.now()
         
         logger.info("\n" + "=" * 70)
-        logger.info("🚀 PRODUCT INTELLIGENCE ENGINE - FULL PIPELINE")
+        logger.info(" PRODUCT INTELLIGENCE ENGINE - FULL PIPELINE")
         logger.info("=" * 70)
-        logger.info(f"⏰ Started at: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(f" Started at: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
         
         try:
             # Phase 1: Scraping
@@ -236,22 +236,22 @@ class PIEnginePipeline:
             duration = (end_time - start_time).total_seconds()
             
             logger.info("\n" + "=" * 70)
-            logger.info("✅ PIPELINE COMPLETED SUCCESSFULLY!")
+            logger.info(" PIPELINE COMPLETED SUCCESSFULLY!")
             logger.info("=" * 70)
-            logger.info(f"⏱️  Duration: {duration:.1f} seconds")
-            logger.info(f"📁 Raw Data: {raw_file}")
-            logger.info(f"📁 Processed Data: {processed_file}")
-            logger.info(f"📊 Dashboard Exports: dashboard/exports/")
+            logger.info(f"⏱  Duration: {duration:.1f} seconds")
+            logger.info(f" Raw Data: {raw_file}")
+            logger.info(f" Processed Data: {processed_file}")
+            logger.info(f" Dashboard Exports: dashboard/exports/")
             logger.info("=" * 70)
             
-            print("\n✨ Next steps:")
+            print("\n Next steps:")
             print("   1. Check dashboard/exports/ for generated charts")
             print("   2. Import looker_studio_data.csv to Looker Studio")
             print("   3. Follow dashboard/looker_studio_guide.md for setup")
             print("   4. Share insights with your product team!")
             
         except Exception as e:
-            logger.error(f"\n❌ Pipeline failed: {e}")
+            logger.error(f"\n Pipeline failed: {e}")
             sys.exit(1)
 
 
@@ -308,7 +308,7 @@ def main():
     elif args.process_only:
         raw_files = list(RAW_DATA_DIR.glob("*.csv"))
         if not raw_files:
-            logger.error("❌ No raw data files found. Run with --scrape-only first.")
+            logger.error(" No raw data files found. Run with --scrape-only first.")
             sys.exit(1)
         latest_file = max(raw_files, key=lambda x: x.stat().st_ctime)
         pipeline.run_processing(latest_file)
@@ -318,7 +318,7 @@ def main():
     elif args.visualize_only:
         processed_files = list(PROCESSED_DATA_DIR.glob("*.csv"))
         if not processed_files:
-            logger.error("❌ No processed data files found. Run pipeline first.")
+            logger.error(" No processed data files found. Run pipeline first.")
             sys.exit(1)
         latest_file = max(processed_files, key=lambda x: x.stat().st_ctime)
         pipeline.run_visualization(latest_file)

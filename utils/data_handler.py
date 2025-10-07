@@ -40,11 +40,11 @@ class DataHandler:
             else:
                 df.to_csv(filepath, index=False, encoding='utf-8-sig')
             
-            logger.info(f"✅ Saved {len(data)} records to {filepath}")
+            logger.info(f" Saved {len(data)} records to {filepath}")
             return True
             
         except Exception as e:
-            logger.error(f"❌ Error saving data to CSV: {e}")
+            logger.error(f" Error saving data to CSV: {e}")
             return False
     
     @staticmethod
@@ -60,15 +60,15 @@ class DataHandler:
         """
         try:
             if not filepath.exists():
-                logger.warning(f"⚠️ File not found: {filepath}")
+                logger.warning(f" File not found: {filepath}")
                 return None
             
             df = pd.read_csv(filepath, encoding='utf-8-sig')
-            logger.info(f"✅ Loaded {len(df)} records from {filepath}")
+            logger.info(f" Loaded {len(df)} records from {filepath}")
             return df
             
         except Exception as e:
-            logger.error(f"❌ Error loading CSV: {e}")
+            logger.error(f" Error loading CSV: {e}")
             return None
     
     @staticmethod
@@ -87,19 +87,19 @@ class DataHandler:
             missing_columns = set(required_columns) - set(df.columns)
             
             if missing_columns:
-                logger.error(f"❌ Missing columns: {missing_columns}")
+                logger.error(f" Missing columns: {missing_columns}")
                 return False
             
             # Check for empty dataframe
             if df.empty:
-                logger.warning("⚠️ DataFrame is empty")
+                logger.warning(" DataFrame is empty")
                 return False
             
-            logger.info("✅ Data validation passed")
+            logger.info(" Data validation passed")
             return True
             
         except Exception as e:
-            logger.error(f"❌ Validation error: {e}")
+            logger.error(f" Validation error: {e}")
             return False
     
     @staticmethod
@@ -129,11 +129,11 @@ class DataHandler:
             if 'date' in df.columns and df['date'].dtype == 'object':
                 df['date'] = pd.to_datetime(df['date'], errors='coerce')
             
-            logger.info(f"✅ Cleaned data: {len(df)} valid reviews remaining")
+            logger.info(f" Cleaned data: {len(df)} valid reviews remaining")
             return df
             
         except Exception as e:
-            logger.error(f"❌ Cleaning error: {e}")
+            logger.error(f" Cleaning error: {e}")
             return df
     
     @staticmethod
@@ -161,5 +161,5 @@ class DataHandler:
             return stats
             
         except Exception as e:
-            logger.error(f"❌ Error generating stats: {e}")
+            logger.error(f" Error generating stats: {e}")
             return {}

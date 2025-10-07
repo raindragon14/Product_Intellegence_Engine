@@ -1,0 +1,250 @@
+{
+  "dashboard_config": {
+    "title": "Product Intelligence Dashboard - MyUNNES",
+    "description": "Automated review analysis and insights dashboard",
+    "version": "1.0",
+    "created_date": "2025-10-07"
+  },
+  "data_sources": [
+    {
+      "name": "processed_reviews",
+      "type": "csv",
+      "file": "looker_studio_data.csv",
+      "refresh_schedule": "manual",
+      "schema": {
+        "review_id": "string",
+        "content": "string",
+        "rating": "number",
+        "date": "date",
+        "category": "string",
+        "subcategory": "string",
+        "sentiment": "string",
+        "priority": "string",
+        "summary": "string",
+        "keywords": "string"
+      }
+    }
+  ],
+  "kpis": [
+    {
+      "name": "Total Reviews",
+      "metric": "COUNT(review_id)",
+      "format": "number",
+      "icon": "📊",
+      "color": "#3498db"
+    },
+    {
+      "name": "Average Rating",
+      "metric": "AVG(rating)",
+      "format": "0.0",
+      "icon": "⭐",
+      "color": "#f39c12"
+    },
+    {
+      "name": "Positive Sentiment %",
+      "metric": "COUNT_IF(sentiment='positive') / COUNT(review_id) * 100",
+      "format": "0.0%",
+      "icon": "😊",
+      "color": "#2ecc71"
+    },
+    {
+      "name": "High Priority Issues",
+      "metric": "COUNT_IF(priority='high')",
+      "format": "number",
+      "icon": "🔴",
+      "color": "#e74c3c"
+    }
+  ],
+  "visualizations": [
+    {
+      "id": "top_categories",
+      "type": "horizontal_bar_chart",
+      "title": "📊 Top Complaint Categories",
+      "dimension": "category",
+      "metric": "COUNT(review_id)",
+      "sort": "descending",
+      "limit": 10,
+      "style": {
+        "color_scheme": "blue_gradient",
+        "show_labels": true,
+        "show_legend": false
+      }
+    },
+    {
+      "id": "sentiment_distribution",
+      "type": "pie_chart",
+      "title": "😊 Sentiment Distribution",
+      "dimension": "sentiment",
+      "metric": "COUNT(review_id)",
+      "style": {
+        "colors": {
+          "positive": "#2ecc71",
+          "neutral": "#f39c12",
+          "negative": "#e74c3c"
+        },
+        "show_percentages": true,
+        "donut": false
+      }
+    },
+    {
+      "id": "rating_distribution",
+      "type": "column_chart",
+      "title": "⭐ Rating Distribution",
+      "dimension": "rating",
+      "metric": "COUNT(review_id)",
+      "sort": "descending",
+      "style": {
+        "color": "#f39c12",
+        "show_labels": true
+      }
+    },
+    {
+      "id": "trend_analysis",
+      "type": "time_series",
+      "title": "📈 Rating & Volume Trends",
+      "dimension": "date",
+      "date_granularity": "month",
+      "metrics": [
+        {
+          "name": "AVG(rating)",
+          "type": "line",
+          "color": "#3498db",
+          "axis": "left"
+        },
+        {
+          "name": "COUNT(review_id)",
+          "type": "bar",
+          "color": "#9b59b6",
+          "axis": "right"
+        }
+      ]
+    },
+    {
+      "id": "priority_matrix",
+      "type": "stacked_column_chart",
+      "title": "⚠️ Priority by Category",
+      "dimension": "category",
+      "breakdown": "priority",
+      "metric": "COUNT(review_id)",
+      "style": {
+        "colors": {
+          "high": "#e74c3c",
+          "medium": "#f39c12",
+          "low": "#2ecc71"
+        },
+        "show_totals": true
+      }
+    },
+    {
+      "id": "category_sentiment_heatmap",
+      "type": "pivot_table",
+      "title": "🔥 Category-Sentiment Matrix",
+      "row_dimension": "category",
+      "column_dimension": "sentiment",
+      "metric": "COUNT(review_id)",
+      "style": {
+        "heatmap": true,
+        "show_totals": true,
+        "color_scale": "green_to_red"
+      }
+    },
+    {
+      "id": "critical_issues",
+      "type": "table",
+      "title": "🔴 Critical Issues Requiring Attention",
+      "dimensions": ["category", "rating", "summary", "date"],
+      "filter": {
+        "field": "priority",
+        "operator": "equals",
+        "value": "high"
+      },
+      "sort": {
+        "field": "date",
+        "order": "descending"
+      },
+      "limit": 20,
+      "style": {
+        "compact": true,
+        "alternating_rows": true
+      }
+    }
+  ],
+  "filters": [
+    {
+      "name": "date_range",
+      "field": "date",
+      "type": "date_range",
+      "default": "last_90_days",
+      "position": "top"
+    },
+    {
+      "name": "category_filter",
+      "field": "category",
+      "type": "dropdown",
+      "multiple": true,
+      "position": "top"
+    },
+    {
+      "name": "sentiment_filter",
+      "field": "sentiment",
+      "type": "checkbox",
+      "default": "all",
+      "position": "top"
+    },
+    {
+      "name": "rating_slider",
+      "field": "rating",
+      "type": "slider",
+      "min": 1,
+      "max": 5,
+      "default": [1, 5],
+      "position": "sidebar"
+    }
+  ],
+  "layout": {
+    "grid_columns": 12,
+    "sections": [
+      {
+        "name": "header",
+        "components": ["title", "filters"]
+      },
+      {
+        "name": "kpis",
+        "layout": "4_columns",
+        "components": ["total_reviews", "avg_rating", "positive_sentiment", "high_priority"]
+      },
+      {
+        "name": "main_charts",
+        "layout": "2_columns",
+        "components": ["top_categories", "sentiment_distribution"]
+      },
+      {
+        "name": "trends",
+        "layout": "1_column",
+        "components": ["trend_analysis"]
+      },
+      {
+        "name": "detailed_analysis",
+        "layout": "2_columns",
+        "components": ["priority_matrix", "category_sentiment_heatmap"]
+      },
+      {
+        "name": "critical_table",
+        "layout": "1_column",
+        "components": ["critical_issues"]
+      }
+    ]
+  },
+  "branding": {
+    "logo_url": "",
+    "primary_color": "#3498db",
+    "secondary_color": "#2ecc71",
+    "accent_color": "#e74c3c",
+    "font_family": "Roboto"
+  },
+  "export_settings": {
+    "formats": ["pdf", "csv", "xlsx"],
+    "schedule": "weekly",
+    "recipients": []
+  }
+}

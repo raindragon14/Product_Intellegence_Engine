@@ -41,7 +41,7 @@ class PlayStoreScraper:
             Dictionary with app information or None if error
         """
         try:
-            logger.info(f"📱 Fetching app info for: {self.app_id}")
+            logger.info(f" Fetching app info for: {self.app_id}")
             info = app(self.app_id, lang=self.language, country=self.country)
             
             app_data = {
@@ -55,11 +55,11 @@ class PlayStoreScraper:
                 'updated': info.get('updated'),
             }
             
-            logger.info(f"✅ App: {app_data['title']} | Rating: {app_data['score']:.1f} | Reviews: {app_data['reviews_count']:,}")
+            logger.info(f" App: {app_data['title']} | Rating: {app_data['score']:.1f} | Reviews: {app_data['reviews_count']:,}")
             return app_data
             
         except Exception as e:
-            logger.error(f"❌ Error fetching app info: {e}")
+            logger.error(f" Error fetching app info: {e}")
             return None
     
     def scrape_reviews(self, continuation_token: str = None) -> List[Dict]:
@@ -73,7 +73,7 @@ class PlayStoreScraper:
             List of review dictionaries
         """
         try:
-            logger.info(f"🔍 Starting to scrape reviews (max: {self.max_reviews})...")
+            logger.info(f" Starting to scrape reviews (max: {self.max_reviews})...")
             
             all_reviews = []
             token = continuation_token
@@ -91,7 +91,7 @@ class PlayStoreScraper:
                     )
                     
                     if not result:
-                        logger.warning("⚠️ No more reviews available")
+                        logger.warning(" No more reviews available")
                         break
                     
                     # Process and store reviews
@@ -112,17 +112,17 @@ class PlayStoreScraper:
                     
                     # Break if no more continuation token
                     if not token:
-                        logger.info("✅ Reached end of available reviews")
+                        logger.info(" Reached end of available reviews")
                         break
                     
                     # Rate limiting
                     time.sleep(self.delay)
             
-            logger.info(f"✅ Successfully scraped {len(all_reviews)} reviews")
+            logger.info(f" Successfully scraped {len(all_reviews)} reviews")
             return all_reviews
             
         except Exception as e:
-            logger.error(f"❌ Error scraping reviews: {e}")
+            logger.error(f" Error scraping reviews: {e}")
             return []
     
     def save_reviews(self, reviews_data: List[Dict], filename: str = None) -> bool:
@@ -137,7 +137,7 @@ class PlayStoreScraper:
             bool: True if successful, False otherwise
         """
         if not reviews_data:
-            logger.warning("⚠️ No reviews to save")
+            logger.warning(" No reviews to save")
             return False
         
         try:
@@ -149,12 +149,12 @@ class PlayStoreScraper:
             success = DataHandler.save_to_csv(reviews_data, filepath)
             
             if success:
-                logger.info(f"💾 Reviews saved to: {filepath}")
+                logger.info(f" Reviews saved to: {filepath}")
             
             return success
             
         except Exception as e:
-            logger.error(f"❌ Error saving reviews: {e}")
+            logger.error(f" Error saving reviews: {e}")
             return False
     
     def run(self, save_file: bool = True) -> List[Dict]:
@@ -168,20 +168,20 @@ class PlayStoreScraper:
             List of scraped reviews
         """
         logger.info("=" * 60)
-        logger.info("🚀 Starting Google Play Store Scraper")
+        logger.info(" Starting Google Play Store Scraper")
         logger.info("=" * 60)
         
         # Get app info
         app_info = self.get_app_info()
         if not app_info:
-            logger.error("❌ Failed to fetch app info. Aborting.")
+            logger.error(" Failed to fetch app info. Aborting.")
             return []
         
         # Scrape reviews
         reviews_data = self.scrape_reviews()
         
         if not reviews_data:
-            logger.error("❌ No reviews scraped. Aborting.")
+            logger.error(" No reviews scraped. Aborting.")
             return []
         
         # Save to file
@@ -189,7 +189,7 @@ class PlayStoreScraper:
             self.save_reviews(reviews_data)
         
         logger.info("=" * 60)
-        logger.info(f"✅ Scraping completed! Total reviews: {len(reviews_data)}")
+        logger.info(f" Scraping completed! Total reviews: {len(reviews_data)}")
         logger.info("=" * 60)
         
         return reviews_data
@@ -206,7 +206,7 @@ def main():
     
     # Display summary
     if reviews_data:
-        print(f"\n📊 Summary:")
+        print(f"\n Summary:")
         print(f"   Total reviews: {len(reviews_data)}")
         print(f"   Data saved to: {RAW_DATA_DIR}")
 

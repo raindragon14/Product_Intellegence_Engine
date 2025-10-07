@@ -1,0 +1,17 @@
+# Minimal dependencies untuk menjalankan core functionality
+# Install dengan: pip install -r requirements-minimal.txt
+
+# Core (Required)
+python-dotenv
+pandas
+requests
+google-play-scraper
+google-generativeai
+tqdm
+
+# Optional - Install jika ingin visualisasi
+# matplotlib
+# seaborn
+# jupyter
+# ipykernel
+# openpyxl

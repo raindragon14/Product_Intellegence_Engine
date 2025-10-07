@@ -31,7 +31,7 @@ class FeedbackProcessor:
     def __init__(self):
         """Initialize the LLM processor."""
         if not GEMINI_API_KEY:
-            raise ValueError("❌ GEMINI_API_KEY not found in environment variables!")
+            raise ValueError(" GEMINI_API_KEY not found in environment variables!")
         
         # Configure Gemini API
         genai.configure(api_key=GEMINI_API_KEY)
@@ -40,7 +40,7 @@ class FeedbackProcessor:
         self.max_retries = LLM_CONFIG['max_retries']
         self.retry_delay = LLM_CONFIG['retry_delay']
         
-        logger.info(f"✅ Initialized Gemini model: {LLM_CONFIG['model']}")
+        logger.info(f" Initialized Gemini model: {LLM_CONFIG['model']}")
     
     def create_classification_prompt(self, review_content: str, rating: int) -> str:
         """
@@ -58,7 +58,7 @@ class FeedbackProcessor:
         prompt = f"""Analisis ulasan pengguna berikut dan klasifikasikan dengan detail:
 
 ULASAN: "{review_content}"
-RATING: {rating}/5 ⭐
+RATING: {rating}/5 
 
 Berikan analisis dalam format JSON berikut:
 {{
@@ -124,21 +124,21 @@ Jawab HANYA dengan JSON, tanpa penjelasan tambahan."""
                 if all(field in result for field in required_fields):
                     return result
                 else:
-                    logger.warning(f"⚠️ Missing fields in response: {result}")
+                    logger.warning(f" Missing fields in response: {result}")
                     
             except json.JSONDecodeError as e:
-                logger.warning(f"⚠️ JSON parse error (attempt {attempt + 1}/{self.max_retries}): {e}")
+                logger.warning(f" JSON parse error (attempt {attempt + 1}/{self.max_retries}): {e}")
                 logger.debug(f"Response text: {response.text[:200]}")
                 
             except Exception as e:
-                logger.warning(f"⚠️ Classification error (attempt {attempt + 1}/{self.max_retries}): {e}")
+                logger.warning(f" Classification error (attempt {attempt + 1}/{self.max_retries}): {e}")
             
             # Wait before retry
             if attempt < self.max_retries - 1:
                 time.sleep(self.retry_delay)
         
         # Return default classification if all retries failed
-        logger.error(f"❌ Failed to classify review after {self.max_retries} attempts")
+        logger.error(f" Failed to classify review after {self.max_retries} attempts")
         return self._get_default_classification(rating)
     
     def _get_default_classification(self, rating: int) -> Dict:
@@ -195,7 +195,7 @@ Jawab HANYA dengan JSON, tanpa penjelasan tambahan."""
         for key in ['category', 'subcategory', 'sentiment', 'priority', 'summary', 'keywords']:
             reviews_df[key] = [c.get(key, '') for c in classifications]
         
-        logger.info("✅ Classification completed!")
+        logger.info(" Classification completed!")
         return reviews_df
     
     def save_processed_data(self, df: pd.DataFrame, filename: str = None) -> bool:
@@ -224,12 +224,12 @@ Jawab HANYA dengan JSON, tanpa penjelasan tambahan."""
             success = DataHandler.save_to_csv(df_output.to_dict('records'), filepath)
             
             if success:
-                logger.info(f"💾 Processed data saved to: {filepath}")
+                logger.info(f" Processed data saved to: {filepath}")
             
             return success
             
         except Exception as e:
-            logger.error(f"❌ Error saving processed data: {e}")
+            logger.error(f" Error saving processed data: {e}")
             return False
     
     def run(self, input_file: str, output_file: str = None) -> pd.DataFrame:
@@ -252,12 +252,12 @@ Jawab HANYA dengan JSON, tanpa penjelasan tambahan."""
         df = DataHandler.load_from_csv(input_path)
         
         if df is None or df.empty:
-            logger.error("❌ Failed to load data or data is empty")
+            logger.error(" Failed to load data or data is empty")
             return pd.DataFrame()
         
         # Validate data
         if not DataHandler.validate_reviews(df, REVIEW_SCHEMA['required_columns']):
-            logger.error("❌ Data validation failed")
+            logger.error(" Data validation failed")
             return pd.DataFrame()
         
         # Clean data
@@ -273,14 +273,14 @@ Jawab HANYA dengan JSON, tanpa penjelasan tambahan."""
         self._display_summary(df_processed)
         
         logger.info("=" * 60)
-        logger.info("✅ Processing pipeline completed!")
+        logger.info(" Processing pipeline completed!")
         logger.info("=" * 60)
         
         return df_processed
     
     def _display_summary(self, df: pd.DataFrame):
         """Display processing summary statistics."""
-        logger.info("\n📊 PROCESSING SUMMARY:")
+        logger.info("\n PROCESSING SUMMARY:")
         logger.info(f"   Total reviews processed: {len(df)}")
         
         if 'category' in df.columns:
@@ -309,21 +309,21 @@ def main():
     raw_files = list(RAW_DATA_DIR.glob("*.csv"))
     
     if not raw_files:
-        logger.error("❌ No raw data files found in data/raw/")
-        logger.info("💡 Please run scraper.py first to collect reviews")
+        logger.error(" No raw data files found in data/raw/")
+        logger.info(" Please run scraper.py first to collect reviews")
         return
     
     # Use the most recent file
     latest_file = max(raw_files, key=os.path.getctime)
-    logger.info(f"📂 Using input file: {latest_file.name}")
+    logger.info(f" Using input file: {latest_file.name}")
     
     # Initialize and run processor
     processor = FeedbackProcessor()
     df_processed = processor.run(latest_file.name)
     
     if not df_processed.empty:
-        print(f"\n✅ Success! Processed {len(df_processed)} reviews")
-        print(f"📁 Output saved to: {PROCESSED_DATA_DIR}")
+        print(f"\n Success! Processed {len(df_processed)} reviews")
+        print(f" Output saved to: {PROCESSED_DATA_DIR}")
 
 
 if __name__ == "__main__":

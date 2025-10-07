@@ -23,12 +23,12 @@ PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
 # API Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 if not GEMINI_API_KEY:
-    print("⚠️ WARNING: GEMINI_API_KEY not found in environment variables!")
+    print(" WARNING: GEMINI_API_KEY not found in environment variables!")
 
 # Scraper Configuration
 SCRAPER_CONFIG = {
-    "app_id": "com.unnes.myunnes",  # Default app ID
-    "max_reviews": 1000,
+    "app_id": "com.whatsapp",  # Default app ID
+    "max_reviews": 50,
     "language": "id",  # Indonesian
     "country": "id",  # Indonesia
     "sort_by": "newest",
@@ -37,7 +37,7 @@ SCRAPER_CONFIG = {
 
 # LLM Processing Configuration
 LLM_CONFIG = {
-    "model": "gemini-1.5-flash",
+    "model": "gemini-2.5-flash",
     "temperature": 0.3,  # Lower for more consistent categorization
     "max_retries": 3,
     "retry_delay": 2,  # seconds

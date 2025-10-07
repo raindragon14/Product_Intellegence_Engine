@@ -55,11 +55,11 @@ class DashboardGenerator:
                 filepath = max(processed_files, key=lambda x: x.stat().st_ctime)
             
             df = DataHandler.load_from_csv(filepath)
-            logger.info(f"✅ Loaded data for visualization: {filepath.name}")
+            logger.info(f" Loaded data for visualization: {filepath.name}")
             return df
             
         except Exception as e:
-            logger.error(f"❌ Error loading data: {e}")
+            logger.error(f" Error loading data: {e}")
             return None
     
     def generate_category_chart(self, df: pd.DataFrame, save: bool = True):
@@ -72,7 +72,7 @@ class DashboardGenerator:
         category_counts = df['category'].value_counts()
         
         ax = category_counts.plot(kind='barh', color='skyblue', edgecolor='navy')
-        plt.title('📊 Top Complaints by Category', fontsize=16, fontweight='bold', pad=20)
+        plt.title(' Top Complaints by Category', fontsize=16, fontweight='bold', pad=20)
         plt.xlabel('Number of Reviews', fontsize=12)
         plt.ylabel('Category', fontsize=12)
         
@@ -85,7 +85,7 @@ class DashboardGenerator:
         if save:
             filepath = self.output_dir / 'category_distribution.png'
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
-            logger.info(f"💾 Saved chart: {filepath}")
+            logger.info(f" Saved chart: {filepath}")
         
         plt.show()
     
@@ -103,7 +103,7 @@ class DashboardGenerator:
         
         # Bar chart
         sentiment_counts.plot(kind='bar', ax=ax1, color=sentiment_colors, edgecolor='black')
-        ax1.set_title('😊 Sentiment Distribution', fontsize=14, fontweight='bold')
+        ax1.set_title(' Sentiment Distribution', fontsize=14, fontweight='bold')
         ax1.set_xlabel('Sentiment', fontsize=12)
         ax1.set_ylabel('Count', fontsize=12)
         ax1.tick_params(axis='x', rotation=45)
@@ -111,7 +111,7 @@ class DashboardGenerator:
         # Pie chart
         sentiment_counts.plot(kind='pie', ax=ax2, autopct='%1.1f%%', 
                              colors=sentiment_colors, startangle=90)
-        ax2.set_title('😊 Sentiment Percentage', fontsize=14, fontweight='bold')
+        ax2.set_title(' Sentiment Percentage', fontsize=14, fontweight='bold')
         ax2.set_ylabel('')
         
         plt.tight_layout()
@@ -119,7 +119,7 @@ class DashboardGenerator:
         if save:
             filepath = self.output_dir / 'sentiment_analysis.png'
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
-            logger.info(f"💾 Saved chart: {filepath}")
+            logger.info(f" Saved chart: {filepath}")
         
         plt.show()
     
@@ -144,7 +144,7 @@ class DashboardGenerator:
         # Average rating trend
         ax1.plot(monthly_stats['month'], monthly_stats['rating'], 
                 marker='o', linewidth=2, markersize=8, color='#3498db')
-        ax1.set_title('📈 Average Rating Trend', fontsize=14, fontweight='bold')
+        ax1.set_title(' Average Rating Trend', fontsize=14, fontweight='bold')
         ax1.set_ylabel('Average Rating', fontsize=12)
         ax1.set_ylim(0, 5.5)
         ax1.grid(True, alpha=0.3)
@@ -153,7 +153,7 @@ class DashboardGenerator:
         # Review volume trend
         ax2.bar(monthly_stats['month'], monthly_stats['review_id'], 
                color='#9b59b6', alpha=0.7, edgecolor='black')
-        ax2.set_title('📊 Review Volume Trend', fontsize=14, fontweight='bold')
+        ax2.set_title(' Review Volume Trend', fontsize=14, fontweight='bold')
         ax2.set_xlabel('Month', fontsize=12)
         ax2.set_ylabel('Number of Reviews', fontsize=12)
         ax2.tick_params(axis='x', rotation=45)
@@ -163,7 +163,7 @@ class DashboardGenerator:
         if save:
             filepath = self.output_dir / 'trend_analysis.png'
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
-            logger.info(f"💾 Saved chart: {filepath}")
+            logger.info(f" Saved chart: {filepath}")
         
         plt.show()
     
@@ -179,7 +179,7 @@ class DashboardGenerator:
         
         plt.figure(figsize=(10, 6))
         ax = priority_counts.plot(kind='bar', color=priority_colors, edgecolor='black')
-        plt.title('⚠️ Priority Distribution', fontsize=14, fontweight='bold', pad=20)
+        plt.title(' Priority Distribution', fontsize=14, fontweight='bold', pad=20)
         plt.xlabel('Priority Level', fontsize=12)
         plt.ylabel('Count', fontsize=12)
         plt.xticks(rotation=45)
@@ -193,7 +193,7 @@ class DashboardGenerator:
         if save:
             filepath = self.output_dir / 'priority_distribution.png'
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
-            logger.info(f"💾 Saved chart: {filepath}")
+            logger.info(f" Saved chart: {filepath}")
         
         plt.show()
     
@@ -211,7 +211,7 @@ class DashboardGenerator:
             # Main export
             looker_file = self.output_dir / 'looker_studio_data.csv'
             df.to_csv(looker_file, index=False, encoding='utf-8-sig')
-            logger.info(f"💾 Exported for Looker Studio: {looker_file}")
+            logger.info(f" Exported for Looker Studio: {looker_file}")
             
             # Summary statistics
             summary = {
@@ -227,24 +227,24 @@ class DashboardGenerator:
             with open(summary_file, 'w', encoding='utf-8') as f:
                 json.dump(summary, f, indent=2, ensure_ascii=False)
             
-            logger.info(f"💾 Saved summary: {summary_file}")
+            logger.info(f" Saved summary: {summary_file}")
             
             return True
             
         except Exception as e:
-            logger.error(f"❌ Export error: {e}")
+            logger.error(f" Export error: {e}")
             return False
     
     def generate_all_charts(self, df: pd.DataFrame):
         """Generate all visualization charts."""
-        logger.info("🎨 Generating all charts...")
+        logger.info(" Generating all charts...")
         
         self.generate_category_chart(df)
         self.generate_sentiment_chart(df)
         self.generate_priority_chart(df)
         self.generate_trend_chart(df)
         
-        logger.info("✅ All charts generated!")
+        logger.info(" All charts generated!")
     
     def run(self, filename: str = None):
         """
@@ -254,13 +254,13 @@ class DashboardGenerator:
             filename: Specific processed file to visualize
         """
         logger.info("=" * 60)
-        logger.info("🎨 Starting Visualization Pipeline")
+        logger.info(" Starting Visualization Pipeline")
         logger.info("=" * 60)
         
         # Load data
         df = self.load_processed_data(filename)
         if df is None or df.empty:
-            logger.error("❌ No data to visualize")
+            logger.error(" No data to visualize")
             return
         
         # Generate charts
@@ -270,7 +270,7 @@ class DashboardGenerator:
         self.export_for_looker(df)
         
         logger.info("=" * 60)
-        logger.info(f"✅ Visualization complete! Check: {self.output_dir}")
+        logger.info(f" Visualization complete! Check: {self.output_dir}")
         logger.info("=" * 60)
 
 
